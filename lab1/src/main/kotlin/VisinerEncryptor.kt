@@ -16,3 +16,22 @@ fun visiner(data: String, word: String): String {
 			.toCharArray()
 	)
 }
+
+fun decryptVisiner(data: String, word: String): String {
+	val offsets = word.toCharArray().map { it.toLowerCase() - 'a' }.toIntArray()
+	var offsetPos = 0
+	
+	return String(
+		data.toCharArray()
+			.map {
+				if (it in availableItems) {
+					decrypt(it, offsets[offsetPos]).also {
+						offsetPos = (offsetPos + 1).rem(offsets.size)
+					}
+				} else {
+					it
+				}
+			}
+			.toCharArray()
+	)
+}

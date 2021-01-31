@@ -39,4 +39,16 @@ fun encrypt(character: Char, shift: Int): Char {
 	}
 }
 
+fun decrypt(character: Char, shift: Int): Char {
+	val isUpperCase = character.isUpperCase()
+	
+	val res = alphabet[(character.toLowerCase() - 'a' + alphabet.size - shift).rem(alphabet.size)]
+	
+	return if (isUpperCase) {
+		res.toUpperCase()
+	} else {
+		res
+	}
+}
+
 val availableItems by lazy { ('a'..'z').toSet() + ('A'..'Z').toSet() }
