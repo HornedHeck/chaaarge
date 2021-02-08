@@ -1,36 +1,12 @@
 private val alphabet = arrayOf(
-	'a',
-	'b',
-	'c',
-	'd',
-	'e',
-	'f',
-	'g',
-	'h',
-	'i',
-	'j',
-	'k',
-	'l',
-	'm',
-	'n',
-	'o',
-	'p',
-	'q',
-	'r',
-	's',
-	't',
-	'u',
-	'v',
-	'w',
-	'x',
-	'y',
-	'z'
+	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+	'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 )
 
 fun encrypt(character: Char, shift: Int): Char {
 	val isUpperCase = character.isUpperCase()
 	
-	val res = alphabet[(character.toLowerCase() - 'a' + shift).rem(alphabet.size)]
+	val res = alphabet[(character.toLowerCase() - 'a' + shift  + alphabet.size).rem(alphabet.size)]
 	
 	return if (isUpperCase) {
 		res.toUpperCase()

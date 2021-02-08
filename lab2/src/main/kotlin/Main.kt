@@ -1,17 +1,29 @@
-import crypt.BundledDesEncryptor
 import crypt.CustomDesEncryptor
-import crypt.Encryptor
+import kerberous.*
+import java.util.*
 
 fun main() {
+	val encryptor = CustomDesEncryptor()
+	val c = UUID.randomUUID().toString()
+	println("c: $c")
+	val cKey = UUID.randomUUID().toString().take(7)
+	println("Kc: $cKey")
 	
-//	val encryptor: Encryptor = CustomDesEncryptor()
+	val client = Client(c, "1234567", encryptor)
 	
-	val src = "abadasfjanklvnklpswjasdakljjshfjklashjfklasjkfljakslfjlkasjflasjflkajkslfjlasjfasfasfasfadsgsdgasdgasdg"
-	val key = "11012001"
+	val tgs = UUID.randomUUID().toString()
+	println("tgs(id): $tgs")
+	val tgsKey = UUID.randomUUID().toString().take(7)
+	println("Kas_tgs: $tgsKey")
+	val aServer = AServer(tgs, tgsKey, encryptor, mutableMapOf(c to cKey))
 	
-//	val encrypted = encryptor.encrypt(src, key)
-//	println(encrypted)
+	val ss = UUID.randomUUID().toString()
+	println("ss: $ss")
+	val tgssKey = UUID.randomUUID().toString().take(7)
+	println("Ktgs_ss: $tgssKey")
+	val tgServer = TGServer(tgs , ss , encryptor , tgsKey , tgssKey)
 	
-//	println(encryptor.decrypt(encrypted, key))
+	val sServer = SServer(ss , tgssKey , encryptor)
 	
+	runChain(client , aServer, sServer, tgServer)
 }
