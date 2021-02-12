@@ -9,7 +9,7 @@ fun main() {
 	val cKey = UUID.randomUUID().toString().take(7)
 	println("Kc: $cKey")
 	
-	val client = Client(c, "1234567", encryptor)
+	val client = Client(c, cKey, encryptor)
 	
 	val tgs = UUID.randomUUID().toString()
 	println("tgs(id): $tgs")

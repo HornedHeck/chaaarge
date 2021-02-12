@@ -1,10 +1,5 @@
 package kerberous
 
-import crypt.CustomDesEncryptor
-import crypt.Encryptor
-
-val encryptor: Encryptor = CustomDesEncryptor()
-
 fun runChain(c: Client, aServer: AServer, sServer: SServer, tgServer: TGServer) {
 	
 	val s1 = c.step1()
