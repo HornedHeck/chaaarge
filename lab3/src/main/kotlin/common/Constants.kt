@@ -1,4 +1,4 @@
-package tcp_ip
+package common
 
 // 2 seconds
 const val TIMEOUT = 2000L

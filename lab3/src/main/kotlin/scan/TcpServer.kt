@@ -1,4 +1,4 @@
-package tsp_search
+package scan
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -6,7 +6,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import tcp_ip.Section
+import common.Section
 import kotlin.random.Random
 
 class TcpServer(val isFirewallEnabled: Boolean, val ip: String) {

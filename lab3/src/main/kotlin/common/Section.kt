@@ -1,4 +1,4 @@
-package tcp_ip
+package common
 
 data class Section(
 	val sIp: String,

@@ -1,12 +1,11 @@
-package tcp_reset
+package reset
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import tcp_ip.Section
+import common.Section
 import java.io.PrintStream
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.random.Random

@@ -1,12 +1,20 @@
+import common.Section
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import tcp_ip.Section
-import tcp_reset.InfinityTcpConnection
-import tsp_search.TcpServer
+import reset.InfinityTcpConnection
+import scan.TcpServer
+import synflood.TcpSynServer
+import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 fun main() {
-	scan(false)
+	flood()
 }
 
 suspend fun testCollector(it: Int) {
@@ -84,7 +92,9 @@ fun tcpReset() {
 					rPort = p1,
 					rst = true,
 					sn = sn
-				)
+				).also {
+					println("Attack attempt: $it")
+				}
 			)
 			sn += 16
 			delay(100)
@@ -94,3 +104,74 @@ fun tcpReset() {
 		j2.cancel()
 	}
 }
+
+fun flood() {
+	
+	val timeout = 500L
+	val bufferSize = 32
+	val toServerChannel = Channel<Section>(bufferSize * 20)
+	val fromServerChannel = Channel<Section>(bufferSize * 20)
+	
+	val p = 20
+	val serverIp = "192.168.0.1"
+	val clientIp = "192.168.0.2"
+	val attackerIpTemplate = "192.168.0.1"
+	
+	TcpSynServer(
+		timeout,
+		bufferSize,
+		toServerChannel,
+		fromServerChannel
+	)
+	
+	@OptIn(ExperimentalTime::class)
+	fun CoroutineScope.client(chIn: ReceiveChannel<Section>, chOut: Channel<Section>) = launch {
+		chOut.send(
+			Section(
+				sIp = clientIp, sPort = p,
+				rIp = serverIp, rPort = p,
+				syn = true, sn = Random.nextInt()
+			)
+		)
+		println("C sending SYN")
+		val synAck = measureTimedValue { chIn.receive() }
+		println("Client waited for SYN+ACK ${synAck.duration.inMilliseconds}ms")
+		
+		
+		chOut.send(
+			Section(
+				sIp = clientIp, sPort = p,
+				rIp = serverIp, rPort = p,
+				ack = true, `as` = synAck.value.sn + 1
+			)
+		)
+		println("C sending ACK")
+		
+	}
+	
+	runBlocking {
+		repeat(100) {
+			launch {
+				toServerChannel.send(
+					Section(
+						sIp = attackerIpTemplate + it, sPort = p,
+						rIp = serverIp, rPort = p,
+						syn = true, sn = Random.nextInt()
+					).apply {
+						println("Attacker $sIp started attack")
+					}
+				)
+			}
+		}
+		delay(100)
+		client(
+			produce {
+				for (s in fromServerChannel) {
+					if (s.rIp == clientIp) send(s)
+				}
+			},
+			toServerChannel
+		)
+	}
+}
+

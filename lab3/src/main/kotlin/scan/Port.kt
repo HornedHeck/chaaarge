@@ -1,4 +1,4 @@
-package tsp_search
+package scan
 
 data class Port(
 	val num: Int,
